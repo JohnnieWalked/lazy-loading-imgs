@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lazy loading</title>
+  </head>
+
+  <style>
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      display: block;
+      object-position: center;
+      object-fit: cover;
+    }
+
+    .blur-load::before {
+      position: absolute;
+      content: '';
+      inset: 0;
+      animation: pulse 2.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        background-color: rgba(255, 255, 255, 0);
+      }
+      50% {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+      100% {
+        background-color: rgba(255, 255, 255, 0);
+      }
+    }
+
+    .blur-load {
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .blur-load.loaded > img {
+      opacity: 1;
+    }
+
+    .blur-load.loaded::before {
+      content: none;
+      animation: none;
+    }
+
+    .blur-load > img {
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+  </style>
+
+  <body>
+    <div class="grid">
+      <div class="blur-load" style="background-image: url(imgs/ds1-small.jpg)">
+        <img src="imgs/ds1.jpg" loading="lazy" />
+      </div>
+      <div class="blur-load" style="background-image: url(imgs/ds2-small.jpg)">
+        <img src="imgs/ds2.jpg" loading="lazy" />
+      </div>
+      <div class="blur-load" style="background-image: url(imgs/ds3-small.jpg)">
+        <img src="imgs/ds3.jpg" loading="lazy" />
+      </div>
+      <div class="blur-load" style="background-image: url(imgs/ds4-small.jpg)">
+        <img src="imgs/ds4.jpg" loading="lazy" />
+      </div>
+      <div class="blur-load" style="background-image: url(imgs/ds5-small.jpg)">
+        <img src="imgs/ds5.jpg" loading="lazy" />
+      </div>
+      <div class="blur-load" style="background-image: url(imgs/ds2-small.jpg)">
+        <img src="imgs/ds2.jpg" loading="lazy" />
+      </div>
+      <div class="blur-load" style="background-image: url(imgs/ds1-small.jpg)">
+        <img src="imgs/ds1.jpg" loading="lazy" />
+      </div>
+    </div>
+
+    <script>
+      const blurDivs = document.querySelectorAll('.blur-load');
+      blurDivs.forEach((item) => {
+        const img = item.querySelector('img');
+
+        function loaded() {
+          item.classList.add('loaded');
+        }
+
+        if (img.complete) {
+          loaded();
+        } else {
+          img.addEventListener('load', loaded);
+        }
+      });
+    </script>
+  </body>
+</html>
